@@ -138,7 +138,7 @@ const transform: AxiosTransform = {
         $message.error(errorMsg);
     }
     
-    //throw new Error(errorMsg);
+    throw new Error(errorMsg);
   },
 
   // 请求之前处理config
