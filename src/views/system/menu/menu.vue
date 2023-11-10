@@ -175,7 +175,7 @@
   const treeItemTitle = ref('');
   const pattern = ref('');
   const drawerTitle = ref('');
-
+  const treeMenuList =  ref([]);
   const isAddSon = computed(() => {
     return !treeItemKey.value.length;
   });
@@ -234,7 +234,12 @@
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        message.success('删除成功');
+         http.request({url: 'admin/node/delete', method: 'get', params: {nid:formParams.nid}}).then(res => {
+            getMenus();
+            message.success('删除成功');
+         })
+        
+
       },
       onNegativeClick: () => {
         message.error('已取消');
@@ -250,7 +255,7 @@
   function formSubmit() {
     formRef.value.validate((errors: boolean) => {
       if (!errors) {
-        const res = http.request({url: 'admin/node/update', method: 'post', params: {
+          http.request({url: 'admin/node/update', method: 'post', params: {
           nid: formParams.nid,
           title: formParams.title,
           description: formParams.description,
@@ -259,9 +264,10 @@
           icon: formParams.icon,
           route: formParams.route,
           is_menu:formParams.is_menu,
-        }});
-        console.log(res);
-        message.success('修改成功');
+        }}).then(res => {
+          getMenus();
+          message.success('修改成功');
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -272,16 +278,22 @@
     if (expandedKeys.value.length) {
       expandedKeys.value = [];
     } else {
-      expandedKeys.value = unref(treeData).map((item: any) => item.key as string) as [];
+      expandedKeys.value = unref(treeData).map((item: any) => item.nid as string) as [];
     }
   }
 
+  function getMenus(){
+     http.request({url: 'admin/node/list', method: 'get'}).then(res => {
+        treeMenuList.value = res;
+        const keys =  treeMenuList.value.map((item) => item.nid);
+        Object.assign(formParams, keys.value);
+        treeData.value = treeMenuList.value;
+        loading.value = false;
+     });
+  }
+
   onMounted(async () => {
-    const treeMenuList = await http.request({url: 'admin/node/list', method: 'get'});
-    const keys = treeMenuList.map((item) => item.nid);
-    Object.assign(formParams, keys);
-    treeData.value = treeMenuList;
-    loading.value = false;
+    getMenus();
   });
 
   function onExpandedKeys(keys) {
