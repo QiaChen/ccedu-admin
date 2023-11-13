@@ -112,6 +112,10 @@
           <n-input placeholder="轻输入菜单图标" v-model:value="formParams.icon" />
         </n-form-item>
 
+        <n-form-item label="component" path="component" v-if="formParams.is_menu == 1">
+          <n-input placeholder="component" v-model:value="formParams.component" />
+        </n-form-item>
+
         <n-form-item label="controller" path="controller">
           <n-input placeholder="controller" v-model:value="formParams.controller" />
         </n-form-item>
@@ -133,7 +137,7 @@
         </n-card>
       </n-gi>
     </n-grid>
-    <CreateDrawer ref="createDrawerRef" :title="drawerTitle" :parentid="formParams.nid" />
+    <CreateDrawer @after-add="getMenus" ref="createDrawerRef" :title="drawerTitle" :parentid="formParams.nid" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -200,6 +204,7 @@
     action: '',
     icon: '',
     route: '',
+    component:'',
     is_menu:0,
   });
 
@@ -263,6 +268,7 @@
           action: formParams.action,
           icon: formParams.icon,
           route: formParams.route,
+          component: formParams.component,
           is_menu:formParams.is_menu,
         }}).then(res => {
           getMenus();

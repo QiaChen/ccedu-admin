@@ -38,6 +38,12 @@
           <n-input placeholder="轻输入菜单图标" v-model:value="formParams.icon" />
         </n-form-item>
 
+        <n-form-item label="component" path="component" v-if="formParams.is_menu == 1">
+          <n-input placeholder="component" v-model:value="formParams.component" />
+        </n-form-item>
+
+
+
         <n-form-item label="controller" path="controller">
           <n-input placeholder="controller" v-model:value="formParams.controller" />
         </n-form-item>
@@ -74,6 +80,7 @@
   export default defineComponent({
     name: 'CreateDrawer',
     components: {},
+    emits: ['afterAdd'],
     props: {
       title: {
         type: String,
@@ -88,7 +95,7 @@
         default: 0,
       },
     },
-    setup(props) {
+    setup(props,ctx) {
      
       const message = useMessage();
       const formRef: any = ref(null);
@@ -100,6 +107,7 @@
         action: '',
         icon: '',
         route: '',
+        component :'',
         is_menu:0,
       });
 
@@ -123,8 +131,8 @@
 
       function formSubmit() {
         formRef.value.validate((errors) => {
-          console.log(toRaw(state));
           if (!errors) {
+            ctx.emit('afterAdd')
             http.request({url: 'admin/node/create', method: 'POST', params:state.formParams});
             message.success('添加成功');
             handleReset();
