@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="n-layout-page-header">
-      <n-card :bordered="false" title="角色权限管理"> 添加或者删除角色 </n-card>
-    </div>
     <n-card :bordered="false" class="mt-4 proCard">
       <BasicTable
         :columns="columns"
