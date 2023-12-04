@@ -192,7 +192,7 @@ function openDrawer() {
 function createRole() {
   formRef.value.validate((errors) => {
     if (!errors) {
-      let url = 'rid' in formParams.value ? 'admin/role/update' : (onCreating.value = true);
+      let url = 'rid' in formParams.value ? 'admin/role/update' : 'admin/role/create';
       http
         .request({ url: url, method: 'post', params: formParams.value })
         .then((res) => {
